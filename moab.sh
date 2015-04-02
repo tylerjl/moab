@@ -12,21 +12,31 @@ main () {
     done
     debug "Libraries loaded"
 
-    # List of packages to work on building
-    declare -a pkg_queue
-    debug "Adding all files in ${_MOAB_QUEUE_DIR} to pkg_queue"
-    pkg_queue=(${_MOAB_QUEUE_DIR}/*)
+    debug "Action: ${1}"
+    case "${1}" in
+        add)
+            shift
+            debug "Adding ${1} to package queue"
+            touch "${MOAB_QUEUE_DIR}/${1}" ;;
+        *)
+            warn "Action '${1}' is undefined"
+    esac
 
-    for pkg_path in "${pkg_queue[@]}" ; do
-        pkg=$(basename $pkg_path)
-        if pkg_info=$(cower --info --format="%c/%n-%v" $pkg 2>&1) ; then
-            debug "Package '${pkg}' found: ${pkg_info}"
-            mkdir -p ${_MOAB_PKGBUILD_DIR}/${pkg}
-            cower --download --target ${_MOAB_PKGBUILD_DIR}/${pkg} ${pkg}
-        else
-            error "Package '${pkg}' not found in the AUR"
-        fi
-    done
+    # List of packages to work on building
+    # declare -a pkg_queue
+    # debug "Adding all files in ${_MOAB_QUEUE_DIR} to pkg_queue"
+    # pkg_queue=(${_MOAB_QUEUE_DIR}/*)
+    #
+    # for pkg_path in "${pkg_queue[@]}" ; do
+    #     pkg=$(basename $pkg_path)
+    #     if pkg_info=$(cower --info --format="%c/%n-%v" $pkg 2>&1) ; then
+    #         debug "Package '${pkg}' found: ${pkg_info}"
+    #         mkdir -p ${_MOAB_PKGBUILD_DIR}/${pkg}
+    #         cower --download --target ${_MOAB_PKGBUILD_DIR}/${pkg} ${pkg}
+    #     else
+    #         error "Package '${pkg}' not found in the AUR"
+    #     fi
+    # done
 
     # inotifywait --monitor --quiet --event create "${_MOAB_TRACK_DIR}"
 }

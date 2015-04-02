@@ -7,5 +7,5 @@ debug () {
 }
 
 _msg () {
-    echo -e "$(date "${_LOG_TIMESTAMP_FORMAT}")\t${1}"
+    echo -e "$(date "${MOAB_LOG_TIMESTAMP_FORMAT}")\t${1}"
 }
