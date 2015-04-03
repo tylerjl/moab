@@ -12,12 +12,24 @@ main () {
     done
     debug "Libraries loaded"
 
-    debug "Action: ${1}"
     case "${1}" in
+        init)
+            debug "Initializing empty db if non-existent"
+            moab_init_db
+            ;;
         add)
             shift
-            debug "Adding ${1} to package queue"
-            touch "${MOAB_QUEUE_DIR}/${1}" ;;
+            debug "Checking if ${1} is in the moab database"
+            if moab_new_pkg ${1} ; then
+                debug "Adding ${1} to package queue..."
+                moab_add_pkg ${1}
+            else
+                debug "Nothing to do"
+            fi
+            ;;
+        '')
+            error "No action defined"
+            ;;
         *)
             warn "Action '${1}' is undefined"
     esac
